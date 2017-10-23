@@ -230,6 +230,13 @@ public final class SoundController {
 					holder.checkbox.setChecked(!holder.checkbox.isChecked());
 				} else {
 					soundAdapter.getOnSoundEditListener().onSoundEdit(view);
+
+					if (soundInfo.isPlaying) {
+						soundAdapter.getOnSoundEditListener().onSoundPause(holder.playAndStopButton);
+					}
+					else {
+						soundAdapter.getOnSoundEditListener().onSoundPlay(holder.playAndStopButton);
+					}
 				}
 			}
 		};
