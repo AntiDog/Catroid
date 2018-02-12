@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,8 +58,8 @@ import org.catrobat.catroid.scratchconverter.Client;
 import org.catrobat.catroid.scratchconverter.protocol.Job;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScratchConverterActivity;
-import org.catrobat.catroid.ui.adapter.ScratchJobAdapter;
-import org.catrobat.catroid.ui.adapter.ScratchJobAdapter.ScratchJobEditListener;
+import org.catrobat.catroid.ui.recyclerview.adapter.ScratchJobAdapter;
+import org.catrobat.catroid.ui.recyclerview.adapter.ScratchJobAdapter.ScratchJobEditListener;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.recyclerview.asynctask.ProjectLoaderTask;
 import org.catrobat.catroid.ui.scratchconverter.BaseInfoViewListener;
@@ -91,8 +92,8 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 	private ImageView upDownArrowImageView;
 	private ScrollView scrollView;
 
-	private ListView runningJobsListView;
-	private ListView finishedFailedJobsListView;
+	private RecyclerView runningJobsRecyclerView;
+	private RecyclerView finishedFailedJobsRecyclerView;
 
 	private Map<Long, Job> downloadJobsMap = Collections.synchronizedMap(new LinkedHashMap<Long, Job>());
 	private Map<Long, String> downloadedProgramsMap = Collections.synchronizedMap(new LinkedHashMap<Long, String>());
@@ -124,9 +125,9 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 		scrollView = (ScrollView) rootView.findViewById(R.id.scratch_conversion_scroll_view);
 
 		runningJobsList = (RelativeLayout) rootView.findViewById(R.id.scratch_conversion_list);
-		runningJobsListView = (ListView) rootView.findViewById(R.id.scratch_conversion_list_view);
+		runningJobsRecyclerView = (RecyclerView) rootView.findViewById(R.id.scratch_conversion_list_view);
 		finishedFailedJobsList = (RelativeLayout) rootView.findViewById(R.id.scratch_converted_programs_list);
-		finishedFailedJobsListView = (ListView) rootView.findViewById(R.id.scratch_converted_programs_list_view);
+		finishedFailedJobsRecyclerView = (RecyclerView) rootView.findViewById(R.id.scratch_converted_programs_list_view);
 
 		convertPanelStatusView.setVisibility(View.VISIBLE);
 		convertProgressLayout.setVisibility(View.GONE);
@@ -149,18 +150,14 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 	private void initAdapters() {
 		Preconditions.checkState(getActivity() != null);
 		runningJobsAdapter = new ScratchJobAdapter(getActivity(),
-				R.layout.fragment_scratch_job_list_item,
-				R.id.scratch_job_list_item_title,
 				runningJobs);
-		runningJobsListView.setAdapter(runningJobsAdapter);
+		runningJobsRecyclerView.setAdapter(runningJobsAdapter);
 		runningJobsList.setVisibility(View.GONE);
 
 		finishedFailedJobsAdapter = new ScratchJobAdapter(getActivity(),
-				R.layout.fragment_scratch_job_list_item,
-				R.id.scratch_job_list_item_title,
 				finishedFailedJobs);
-		finishedFailedJobsAdapter.setScratchJobEditListener(this);
-		finishedFailedJobsListView.setAdapter(finishedFailedJobsAdapter);
+		//finishedFailedJobsAdapter.setScratchJobEditListener(this);
+		finishedFailedJobsRecyclerView.setAdapter(finishedFailedJobsAdapter);
 		finishedFailedJobsList.setVisibility(View.GONE);
 	}
 
@@ -195,7 +192,7 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 				finishedFailedJobs.remove(job);
 				finishedFailedJobsAdapter.notifyDataSetChanged();
 
-				Utils.setListViewHeightBasedOnItems(finishedFailedJobsListView);
+				//Utils.setListViewHeightBasedOnItems(finishedFailedJobsRecyclerView);
 				if (finishedFailedJobs.size() == 0) {
 					finishedFailedJobsList.setVisibility(View.GONE);
 				}
@@ -205,7 +202,7 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 				runningJobs.add(0, job);
 				runningJobsAdapter.notifyDataSetChanged();
 
-				Utils.setListViewHeightBasedOnItems(runningJobsListView);
+				//Utils.setListViewHeightBasedOnItems(runningJobsRecyclerView);
 				runningJobsList.setVisibility(View.VISIBLE);
 			} else {
 				runningJobsAdapter.notifyDataSetChanged();
@@ -217,7 +214,7 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 			runningJobs.remove(job);
 			runningJobsAdapter.notifyDataSetChanged();
 
-			Utils.setListViewHeightBasedOnItems(runningJobsListView);
+			//Utils.setListViewHeightBasedOnItems(runningJobsRecyclerView);
 			if (runningJobs.size() == 0) {
 				runningJobsList.setVisibility(View.GONE);
 			}
@@ -227,7 +224,7 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 			finishedFailedJobs.add(0, job);
 			finishedFailedJobsAdapter.notifyDataSetChanged();
 
-			Utils.setListViewHeightBasedOnItems(finishedFailedJobsListView);
+			//Utils.setListViewHeightBasedOnItems(finishedFailedJobsRecyclerView);
 			finishedFailedJobsList.setVisibility(View.VISIBLE);
 		} else {
 			finishedFailedJobsAdapter.notifyDataSetChanged();
@@ -256,6 +253,8 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 			convertPanelStatusView.setVisibility(View.VISIBLE);
 			convertProgressLayout.setVisibility(View.GONE);
 		}
+
+		runningJobsAdapter.notifyDataSetChanged();
 		setIconImageView(job.getImage());
 	}
 
@@ -341,7 +340,7 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 		}
 
 		if (runningJobs.size() > 0) {
-			Utils.setListViewHeightBasedOnItems(runningJobsListView);
+			//Utils.setListViewHeightBasedOnItems(runningJobsRecyclerView);
 			runningJobsList.setVisibility(View.VISIBLE);
 			runningJobsAdapter.notifyDataSetChanged();
 		} else {
@@ -349,7 +348,7 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 		}
 
 		if (finishedFailedJobs.size() > 0) {
-			Utils.setListViewHeightBasedOnItems(finishedFailedJobsListView);
+		//	Utils.setListViewHeightBasedOnItems(finishedFailedJobsRecyclerView);
 			finishedFailedJobsList.setVisibility(View.VISIBLE);
 			finishedFailedJobsAdapter.notifyDataSetChanged();
 		} else {
@@ -487,7 +486,7 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 
 		Log.i(TAG, "User clicked on position: " + position);
 
-		final Job job = finishedFailedJobsAdapter.getItem(position);
+		final Job job = finishedFailedJobsAdapter.getItems().get(position);
 		if (job == null) {
 			Log.e(TAG, "Job not found in runningJobsAdapter!");
 			return;
