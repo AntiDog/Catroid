@@ -59,7 +59,6 @@ import org.catrobat.catroid.scratchconverter.protocol.Job;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScratchConverterActivity;
 import org.catrobat.catroid.ui.recyclerview.adapter.ScratchJobAdapter;
-import org.catrobat.catroid.ui.recyclerview.adapter.ScratchJobAdapter.ScratchJobEditListener;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.recyclerview.asynctask.ProjectLoaderTask;
 import org.catrobat.catroid.ui.scratchconverter.BaseInfoViewListener;
@@ -75,10 +74,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ScratchConverterSlidingUpPanelFragment extends Fragment implements BaseInfoViewListener,
-		JobViewListener,
-		Client.DownloadCallback,
-		ScratchJobEditListener,
+
+
+public class ScratchConverterSlidingUpPanelFragment extends Fragment
+		implements BaseInfoViewListener, JobViewListener, Client.DownloadCallback,
 		ProjectLoaderTask.ProjectLoaderListener {
 
 	private static final String TAG = ScratchConverterSlidingUpPanelFragment.class.getSimpleName();
@@ -101,9 +100,13 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 	private RelativeLayout finishedFailedJobsList;
 	private RelativeLayout runningJobsList;
 	private ScratchJobAdapter runningJobsAdapter;
+	public ScratchJobAdapter getRunningJobsAdapter(){return  runningJobsAdapter;};
 	private ScratchJobAdapter finishedFailedJobsAdapter;
+	public ScratchJobAdapter getFinishedFailedJobsAdapter(){return  finishedFailedJobsAdapter;};
 	private List<Job> runningJobs;
 	private List<Job> finishedFailedJobs;
+
+	public Map<Long, String> getDownloadedProgramsMap() {return this.downloadedProgramsMap;}
 
 	@Nullable
 	@Override
@@ -478,15 +481,17 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment implements 
 		updateConvertPanel(job, R.string.status_download_canceled, false, 0);
 	}
 
-	@Override
-	public void onProjectEdit(int position) {
+
+	public void onItemClick(Job item) {
+
 		if (!Looper.getMainLooper().equals(Looper.myLooper())) {
 			throw new AssertionError("You should not change the UI from any thread except UI thread!");
 		}
 
-		Log.i(TAG, "User clicked on position: " + position);
+		//Log.i(TAG, "User clicked on position: " + position);
 
-		final Job job = finishedFailedJobsAdapter.getItems().get(position);
+		//final Job job = finishedFailedJobsAdapter.getItems().get(position);
+		final Job job = item;
 		if (job == null) {
 			Log.e(TAG, "Job not found in runningJobsAdapter!");
 			return;

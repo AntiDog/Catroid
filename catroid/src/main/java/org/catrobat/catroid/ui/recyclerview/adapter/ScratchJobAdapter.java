@@ -29,17 +29,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.images.WebImage;
 import com.squareup.picasso.Picasso;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.ScratchProgramData;
 import org.catrobat.catroid.scratchconverter.protocol.Job;
 import org.catrobat.catroid.ui.recyclerview.viewholder.ScratchJobVH;
 import org.catrobat.catroid.ui.recyclerview.viewholder.ViewHolder;
@@ -48,11 +42,11 @@ import org.catrobat.catroid.utils.Utils;
 import java.util.List;
 import java.util.Locale;
 
-public class ScratchJobAdapter extends RVAdapter<Job> implements RVAdapter.OnItemClickListener<Job> {
+public class ScratchJobAdapter extends RVAdapter<Job> {
 	private static final String TAG = ScratchRemixedProgramAdapter.class.getSimpleName();
 
 	private OnItemClickListener<Job> scratchJobEditListener;
-
+	private Context context;
 
 	private static LayoutInflater inflater;
 
@@ -60,6 +54,7 @@ public class ScratchJobAdapter extends RVAdapter<Job> implements RVAdapter.OnIte
 		super(objects);
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		Log.d(TAG, "Number of remixes: " + objects.size());
+		this.context = context;
 	}
 
 	public void setScratchJobEditListener(OnItemClickListener<Job> listener) {
@@ -182,10 +177,4 @@ public class ScratchJobAdapter extends RVAdapter<Job> implements RVAdapter.OnIte
 
 	}
 
-	public void onItemClick(Job item) {}
-	public void onItemLongClick(Job item, ViewHolder h) {}
-
-	public interface ScratchJobEditListener {
-		void onProjectEdit(int position);
-	}
 }
