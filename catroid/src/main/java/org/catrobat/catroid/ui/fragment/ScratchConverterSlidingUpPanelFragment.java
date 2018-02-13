@@ -56,9 +56,9 @@ import org.catrobat.catroid.scratchconverter.Client;
 import org.catrobat.catroid.scratchconverter.protocol.Job;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScratchConverterActivity;
-import org.catrobat.catroid.ui.recyclerview.adapter.ScratchJobAdapter;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.recyclerview.asynctask.ProjectLoaderTask;
+import org.catrobat.catroid.ui.recyclerview.adapter.ScratchJobAdapter;
 import org.catrobat.catroid.ui.scratchconverter.BaseInfoViewListener;
 import org.catrobat.catroid.ui.scratchconverter.JobViewListener;
 import org.catrobat.catroid.utils.ToastUtil;
@@ -128,15 +128,12 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 
 	private void initAdapters() {
 		Preconditions.checkState(getActivity() != null);
-		runningJobsAdapter = new ScratchJobAdapter(getActivity(),
-				runningJobs);
+		runningJobsAdapter = new ScratchJobAdapter(runningJobs);
 		((RecyclerView) getActivity().findViewById(R.id.scratch_conversion_list_view)).setAdapter(runningJobsAdapter);
 		getActivity().findViewById(R.id.scratch_conversion_list).setVisibility(View.GONE);
-
-		finishedFailedJobsAdapter = new ScratchJobAdapter(getActivity(),
-				finishedFailedJobs);
-		((RecyclerView) getActivity().findViewById(R.id.scratch_converted_programs_list_view)).setAdapter
-				(finishedFailedJobsAdapter);
+		finishedFailedJobsAdapter = new ScratchJobAdapter(finishedFailedJobs);
+		((RecyclerView) getActivity().findViewById(R.id.scratch_converted_programs_list_view))
+				.setAdapter(finishedFailedJobsAdapter);
 		getActivity().findViewById(R.id.scratch_converted_programs_list).setVisibility(View.GONE);
 	}
 
@@ -217,8 +214,8 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 
 		if (showProgress) {
 			((ProgressBar) getActivity().findViewById(R.id.scratch_convert_progress_bar)).setProgress(progress);
-			((TextView) getActivity().findViewById(R.id.scratch_convert_status_progress_text)).setText(String.format
-					(Locale.getDefault(), "%1$d%%", progress));
+			((TextView) getActivity().findViewById(R.id.scratch_convert_status_progress_text)).setText(
+					String.format(Locale.getDefault(), "%1$d%%", progress));
 
 			getActivity().findViewById(R.id.scratch_convert_status_text).setVisibility(View.GONE);
 			getActivity().findViewById(R.id.scratch_convert_progress_layout).setVisibility(View.VISIBLE);

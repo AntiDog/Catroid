@@ -25,7 +25,9 @@ package org.catrobat.catroid.ui.recyclerview.adapter;
 
 import android.util.Log;
 import android.view.View;
+
 import com.squareup.picasso.Picasso;
+
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ScratchProgramData;
 import org.catrobat.catroid.ui.recyclerview.viewholder.ExtendedVH;
@@ -65,18 +67,15 @@ public class ScratchRemixedProgramAdapter extends ExtendedRVAdapter<ScratchProgr
 				onItemClickListener.onItemClick(item);
 			}
 		});
-
 	}
-
 
 	public ScratchRemixedProgramAdapter(List<ScratchProgramData> objects) {
 		super(objects);
 		Log.d(TAG, "Number of remixes: " + objects.size());
 	}
 
-
 	@Override
-	public void setOnItemClickListener(OnItemClickListener listener){
+	public void setOnItemClickListener(OnItemClickListener listener) {
 		this.onItemClickListener = listener;
 	}
 }

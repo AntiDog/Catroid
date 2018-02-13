@@ -23,6 +23,7 @@
 
 package org.catrobat.catroid.ui.fragment;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -30,7 +31,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
-import android.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -73,19 +73,77 @@ import java.util.List;
 public class SearchScratchSearchProjectsListFragment extends Fragment
 		implements RVAdapter.SelectionListener,
 		SearchScratchProgramsTask.SearchScratchProgramsTaskDelegate,
-		RVAdapter.OnItemClickListener<ScratchProgramData>{
-	private ScratchProgramAdapter adapter;
-
-	@Override
-	public void onItemLongClick(ScratchProgramData item, ViewHolder holder) {	}
-
-	@Retention(RetentionPolicy.SOURCE)
-	@IntDef({NONE, CONVERT})
-	@interface ActionModeType {}
+		RVAdapter.OnItemClickListener<ScratchProgramData> {
 	private static final int NONE = 0;
 	private static final int CONVERT = 1;
+	///-----------------------------------------------------------------------------------------------
+	private static final String TAG = SearchScratchSearchProjectsListFragment.class.getSimpleName();
+	private static final String BUNDLE_ARGUMENTS_SCRATCH_PROJECT_DATA = "scratch_project_data";
+	private static final String SHARED_PREFERENCE_NAME = "showDetailsScratchProjects";
+	@ActionModeType
+	protected int actionModeType = NONE;
+	protected String sharedPreferenceDetailsKey = "";
+	private ScratchProgramAdapter adapter;
 	private boolean hasDetails = false;
+	private ItemTouchHelper touchHelper;
+	private ScratchDataFetcher dataFetcher;
+	private ConversionManager conversionManager;
+	private ScratchConverterActivity activity;
+	private String actionModeTitle;
+	private SearchView searchView;
+	private ImageButton audioButton;
+	private RecyclerView searchResultsRecyclerView;
+	private List<ScratchProgramData> scratchProgramDataList;
+	private ScratchProgramData scratchProgramToEdit;
+	private ExpiringLruMemoryObjectCache<ScratchSearchResult> scratchSearchResultCache;
+	private ActionMode actionMode;
+	private SearchScratchProgramsTask currentSearchTask = null;
+	private ActionMode.Callback convertModeCallBack = new ActionMode.Callback() {
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			actionMode = mode;
+			return false;
+		}
 
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.context_menu, menu);
+			actionModeTitle = getString(R.string.convert);
+			adapter.showCheckBoxes = true;
+			adapter.notifyDataSetChanged();
+
+			mode.setTitle(actionModeTitle);
+			searchView.setVisibility(View.GONE);
+			audioButton.setVisibility(View.GONE);
+			setSearchResultsListViewMargin(0, 0, 0, 0);
+			return true;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			switch (item.getItemId()) {
+				case R.id.confirm:
+					handleContextualAction();
+					break;
+				default:
+					return false;
+			}
+			return true;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+
+			resetActionModeParameters();
+			adapter.clearSelection();
+		}
+	};
+
+	@Override
+	public void onItemLongClick(ScratchProgramData item, ViewHolder holder) {
+	}
 
 	private void handleContextualAction() {
 		if (adapter.getSelectedItems().isEmpty()) {
@@ -122,7 +180,7 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 	}
 
 	protected void prepareActionMode(@ActionModeType int type) {
-			startActionMode(type);
+		startActionMode(type);
 	}
 
 	private void startActionMode(@ActionModeType int type) {
@@ -142,20 +200,12 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 		}
 	}
 
-
-	@ActionModeType
-	protected int actionModeType = NONE;
-
-
-
 	public void onSelectionChanged(int selectedItemCnt) {
 		actionMode.setTitle(actionModeTitle + " " + getResources().getQuantityString(R.plurals.am_looks_title,
 				selectedItemCnt,
 				selectedItemCnt));
 	}
 
-	protected String sharedPreferenceDetailsKey = "";
-	private ItemTouchHelper touchHelper;
 	private void onAdapterReady() {
 		adapter.showDetails = PreferenceManager.getDefaultSharedPreferences(
 				getActivity()).getBoolean(sharedPreferenceDetailsKey, false);
@@ -195,29 +245,9 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 		ScratchProgramDetailsActivity.setDataFetcher(dataFetcher);
 		ScratchProgramDetailsActivity.setConversionManager(conversionManager);
 		Intent intent = new Intent(activity, ScratchProgramDetailsActivity.class);
-		intent.putExtra(Constants.INTENT_SCRATCH_PROGRAM_DATA, (Parcelable)item);
+		intent.putExtra(Constants.INTENT_SCRATCH_PROGRAM_DATA, (Parcelable) item);
 		activity.startActivityForResult(intent, Constants.INTENT_REQUEST_CODE_CONVERT);
 	}
-		///-----------------------------------------------------------------------------------------------
-	private static final String TAG = SearchScratchSearchProjectsListFragment.class.getSimpleName();
-
-	private static final String BUNDLE_ARGUMENTS_SCRATCH_PROJECT_DATA = "scratch_project_data";
-	private static final String SHARED_PREFERENCE_NAME = "showDetailsScratchProjects";
-
-	private ScratchDataFetcher dataFetcher;
-	private ConversionManager conversionManager;
-
-	private ScratchConverterActivity activity;
-	private String actionModeTitle;
-
-	private SearchView searchView;
-	private ImageButton audioButton;
-	private RecyclerView searchResultsRecyclerView;
-	private List<ScratchProgramData> scratchProgramDataList;
-	private ScratchProgramData scratchProgramToEdit;
-	private ExpiringLruMemoryObjectCache<ScratchSearchResult> scratchSearchResultCache;
-	private ActionMode actionMode;
-	private SearchScratchProgramsTask currentSearchTask = null;
 
 	// dependency-injection for testing with mock object
 	public void setDataFetcher(final ScratchDataFetcher fetcher) {
@@ -246,49 +276,6 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 					: R.string.show_details);
 		}
 	}
-
-	private ActionMode.Callback convertModeCallBack = new ActionMode.Callback() {
-		@Override
-		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			actionMode = mode;
-			return false;
-		}
-
-		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-
-			MenuInflater inflater = mode.getMenuInflater();
-			inflater.inflate(R.menu.context_menu, menu);
-			actionModeTitle = getString(R.string.convert);
-			adapter.showCheckBoxes = true;
-			adapter.notifyDataSetChanged();
-
-			mode.setTitle(actionModeTitle);
-			searchView.setVisibility(View.GONE);
-			audioButton.setVisibility(View.GONE);
-			setSearchResultsListViewMargin(0, 0, 0, 0);
-			return true;
-		}
-
-		@Override
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			switch (item.getItemId()) {
-				case R.id.confirm:
-					handleContextualAction();
-					break;
-				default:
-					return false;
-		}
-			return true;
-		}
-
-		@Override
-		public void onDestroyActionMode(ActionMode mode) {
-
-			resetActionModeParameters();
-			adapter.clearSelection();
-		}
-	};
 
 	private void resetActionModeParameters() {
 		actionModeType = NONE;
@@ -335,7 +322,7 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		super.onCreateView(inflater,container,savedInstanceState);
+		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
 		activity = (ScratchConverterActivity) getActivity();
 		final View rootView = inflater.inflate(R.layout.fragment_scratch_search_projects_list, container, false);
@@ -495,9 +482,15 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 		adapter.notifyDataSetChanged();
 		searchResultsRecyclerView.setVisibility(View.VISIBLE);
 	}
+
 	@Override
 	public void onStop() {
 		super.onStop();
 		finishActionMode();
+	}
+
+	@Retention(RetentionPolicy.SOURCE)
+	@IntDef({NONE, CONVERT})
+	@interface ActionModeType {
 	}
 }

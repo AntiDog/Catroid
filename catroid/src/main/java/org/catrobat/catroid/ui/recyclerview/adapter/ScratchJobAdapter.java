@@ -23,7 +23,6 @@
 
 package org.catrobat.catroid.ui.recyclerview.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,10 +46,8 @@ public class ScratchJobAdapter extends RVAdapter<Job> {
 
 	private OnItemClickListener<Job> scratchProgramOnClickListener;
 
-
-	public ScratchJobAdapter(Context context, List<Job> objects) {
+	public ScratchJobAdapter(List<Job> objects) {
 		super(objects);
-		context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		Log.d(TAG, "Number of remixes: " + objects.size());
 	}
 
@@ -135,7 +132,6 @@ public class ScratchJobAdapter extends RVAdapter<Job> {
 				break;
 		}
 
-
 		if (showProgressBar) {
 			// update progress state of project:
 			holder.progress.setText(String.format(Locale.getDefault(), "%1$d%%", progress));
@@ -171,7 +167,5 @@ public class ScratchJobAdapter extends RVAdapter<Job> {
 		});
 
 		holder.background.setBackgroundResource(R.drawable.button_background_selector);
-
 	}
-
 }

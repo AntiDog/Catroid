@@ -39,7 +39,7 @@ public class ScratchJobVH extends ViewHolder {
 	public ImageView image;
 	public RelativeLayout details;
 	public TextView progress;
-	public  RelativeLayout progressLayout;
+	public RelativeLayout progressLayout;
 	public TextView title;
 	public TextView status;
 
@@ -55,5 +55,4 @@ public class ScratchJobVH extends ViewHolder {
 		progress = (TextView) view.findViewById(R.id.scratch_job_list_item_progress_text);
 		details = (RelativeLayout) view.findViewById(R.id.scratch_job_details);
 	}
-
 }
