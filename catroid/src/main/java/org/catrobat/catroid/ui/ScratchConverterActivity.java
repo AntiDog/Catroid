@@ -336,7 +336,7 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 		}
 
 		ProjectLoaderTask loadProjectTask = new ProjectLoaderTask(this, getSlidingUpFragment());
-		loadProjectTask.execute();
+		loadProjectTask.execute(catrobatProgramName);
 	}
 
 	public void onItemLongClick(Job item, ViewHolder h) {
