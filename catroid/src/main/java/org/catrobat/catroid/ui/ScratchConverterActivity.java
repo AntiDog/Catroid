@@ -40,8 +40,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.ScratchProgramData;
-import org.catrobat.catroid.io.LoadProjectTask;
+import org.catrobat.catroid.common.ScratchProgramData;;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.scratchconverter.Client;
 import org.catrobat.catroid.scratchconverter.ConversionManager;
@@ -53,6 +52,7 @@ import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.fragment.ScratchConverterSlidingUpPanelFragment;
 import org.catrobat.catroid.ui.fragment.SearchScratchSearchProjectsListFragment;
 import org.catrobat.catroid.ui.recyclerview.adapter.RVAdapter;
+import org.catrobat.catroid.ui.recyclerview.asynctask.ProjectLoaderTask;
 import org.catrobat.catroid.ui.recyclerview.viewholder.ViewHolder;
 import org.catrobat.catroid.utils.ToastUtil;
 import org.catrobat.catroid.utils.Utils;
@@ -335,8 +335,7 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 			return;
 		}
 
-		LoadProjectTask loadProjectTask = new LoadProjectTask(this, catrobatProgramName, true, false);
-		loadProjectTask.setOnLoadProjectCompleteListener(getSlidingUpFragment());
+		ProjectLoaderTask loadProjectTask = new ProjectLoaderTask(this, getSlidingUpFragment());
 		loadProjectTask.execute();
 	}
 
