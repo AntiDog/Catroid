@@ -45,20 +45,17 @@ import java.util.Locale;
 public class ScratchJobAdapter extends RVAdapter<Job> {
 	private static final String TAG = ScratchRemixedProgramAdapter.class.getSimpleName();
 
-	private OnItemClickListener<Job> scratchJobEditListener;
-	private Context context;
+	private OnItemClickListener<Job> scratchProgramOnClickListener;
 
-	private static LayoutInflater inflater;
 
 	public ScratchJobAdapter(Context context, List<Job> objects) {
 		super(objects);
-		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		Log.d(TAG, "Number of remixes: " + objects.size());
-		this.context = context;
 	}
 
-	public void setScratchJobEditListener(OnItemClickListener<Job> listener) {
-		scratchJobEditListener = listener;
+	public void setScratchProgramOnClickListener(OnItemClickListener<Job> listener) {
+		scratchProgramOnClickListener = listener;
 	}
 
 	@Override
@@ -167,8 +164,8 @@ public class ScratchJobAdapter extends RVAdapter<Job> {
 		holder.background.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (scratchJobEditListener != null) {
-					scratchJobEditListener.onItemClick(item);
+				if (scratchProgramOnClickListener != null) {
+					scratchProgramOnClickListener.onItemClick(item);
 				}
 			}
 		});

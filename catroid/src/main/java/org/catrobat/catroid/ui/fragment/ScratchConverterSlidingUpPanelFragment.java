@@ -41,9 +41,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -82,31 +80,23 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 
 	private static final String TAG = ScratchConverterSlidingUpPanelFragment.class.getSimpleName();
 
-	private ImageView convertIconImageView;
-	private TextView convertPanelHeadlineView;
-	private TextView convertPanelStatusView;
-	private RelativeLayout convertProgressLayout;
-	private ProgressBar convertProgressBar;
-	private TextView convertStatusProgressTextView;
-	private ImageView upDownArrowImageView;
-	private ScrollView scrollView;
-
-	private RecyclerView runningJobsRecyclerView;
-	private RecyclerView finishedFailedJobsRecyclerView;
-
 	private Map<Long, Job> downloadJobsMap = Collections.synchronizedMap(new LinkedHashMap<Long, Job>());
 	private Map<Long, String> downloadedProgramsMap = Collections.synchronizedMap(new LinkedHashMap<Long, String>());
 
-	private RelativeLayout finishedFailedJobsList;
-	private RelativeLayout runningJobsList;
 	private ScratchJobAdapter runningJobsAdapter;
-	public ScratchJobAdapter getRunningJobsAdapter(){return  runningJobsAdapter;};
 	private ScratchJobAdapter finishedFailedJobsAdapter;
-	public ScratchJobAdapter getFinishedFailedJobsAdapter(){return  finishedFailedJobsAdapter;};
+
+	public ScratchJobAdapter getFinishedFailedJobsAdapter() {
+		return finishedFailedJobsAdapter;
+	}
+
+	;
 	private List<Job> runningJobs;
 	private List<Job> finishedFailedJobs;
 
-	public Map<Long, String> getDownloadedProgramsMap() {return this.downloadedProgramsMap;}
+	public Map<Long, String> getDownloadedProgramsMap() {
+		return this.downloadedProgramsMap;
+	}
 
 	@Nullable
 	@Override
@@ -117,25 +107,11 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 		finishedFailedJobs = new ArrayList<>();
 
 		final View rootView = inflater.inflate(R.layout.fragment_scratch_converter_sliding_up_panel, container, false);
-		convertIconImageView = (ImageView) rootView.findViewById(R.id.scratch_convert_icon);
-		convertPanelHeadlineView = (TextView) rootView.findViewById(R.id.scratch_convert_headline);
-		convertPanelStatusView = (TextView) rootView.findViewById(R.id.scratch_convert_status_text);
-		convertProgressLayout = (RelativeLayout) rootView.findViewById(R.id.scratch_convert_progress_layout);
-		convertProgressBar = (ProgressBar) rootView.findViewById(R.id.scratch_convert_progress_bar);
-		convertStatusProgressTextView = (TextView) rootView.findViewById(R.id.scratch_convert_status_progress_text);
-		upDownArrowImageView = (ImageView) rootView.findViewById(R.id.scratch_up_down_image_button);
 
-		scrollView = (ScrollView) rootView.findViewById(R.id.scratch_conversion_scroll_view);
-
-		runningJobsList = (RelativeLayout) rootView.findViewById(R.id.scratch_conversion_list);
-		runningJobsRecyclerView = (RecyclerView) rootView.findViewById(R.id.scratch_conversion_list_view);
-		finishedFailedJobsList = (RelativeLayout) rootView.findViewById(R.id.scratch_converted_programs_list);
-		finishedFailedJobsRecyclerView = (RecyclerView) rootView.findViewById(R.id.scratch_converted_programs_list_view);
-
-		convertPanelStatusView.setVisibility(View.VISIBLE);
-		convertProgressLayout.setVisibility(View.GONE);
-		runningJobsList.setVisibility(View.GONE);
-		finishedFailedJobsList.setVisibility(View.GONE);
+		rootView.findViewById(R.id.scratch_convert_status_text).setVisibility(View.VISIBLE);
+		rootView.findViewById(R.id.scratch_convert_progress_layout).setVisibility(View.GONE);
+		rootView.findViewById(R.id.scratch_conversion_list).setVisibility(View.GONE);
+		rootView.findViewById(R.id.scratch_converted_programs_list).setVisibility(View.GONE);
 
 		return rootView;
 	}
@@ -147,24 +123,25 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 	}
 
 	public void scrollUpPanelScrollView() {
-		scrollView.fullScroll(ScrollView.FOCUS_UP);
+		((ScrollView) getActivity().findViewById(R.id.scratch_conversion_scroll_view)).fullScroll(ScrollView.FOCUS_UP);
 	}
 
 	private void initAdapters() {
 		Preconditions.checkState(getActivity() != null);
 		runningJobsAdapter = new ScratchJobAdapter(getActivity(),
 				runningJobs);
-		runningJobsRecyclerView.setAdapter(runningJobsAdapter);
-		runningJobsList.setVisibility(View.GONE);
+		((RecyclerView) getActivity().findViewById(R.id.scratch_conversion_list_view)).setAdapter(runningJobsAdapter);
+		getActivity().findViewById(R.id.scratch_conversion_list).setVisibility(View.GONE);
 
 		finishedFailedJobsAdapter = new ScratchJobAdapter(getActivity(),
 				finishedFailedJobs);
-		//finishedFailedJobsAdapter.setScratchJobEditListener(this);
-		finishedFailedJobsRecyclerView.setAdapter(finishedFailedJobsAdapter);
-		finishedFailedJobsList.setVisibility(View.GONE);
+		((RecyclerView) getActivity().findViewById(R.id.scratch_converted_programs_list_view)).setAdapter
+				(finishedFailedJobsAdapter);
+		getActivity().findViewById(R.id.scratch_converted_programs_list).setVisibility(View.GONE);
 	}
 
 	public void rotateImageButton(float degrees) {
+		ImageView upDownArrowImageView = (ImageView) getActivity().findViewById(R.id.scratch_up_down_image_button);
 		upDownArrowImageView.setAlpha(Math.max(1.0f - (float) Math.sin(degrees / 360.0f * 2.0f * Math.PI), 0.3f));
 		upDownArrowImageView.setRotation(degrees);
 	}
@@ -183,9 +160,10 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 			// in order to download only thumbnail version of the original image
 			// we have to reduce the image size in the URL
 			final String thumbnailImageURL = Utils.changeSizeOfScratchImageURL(originalImageURL, height);
-			Picasso.with(getActivity()).load(thumbnailImageURL).into(convertIconImageView);
+			Picasso.with(getActivity()).load(thumbnailImageURL).into((ImageView) (getActivity().findViewById(R.id
+					.scratch_convert_icon)));
 		} else {
-			convertIconImageView.setImageBitmap(null);
+			((ImageView) getActivity().findViewById(R.id.scratch_convert_icon)).setImageBitmap(null);
 		}
 	}
 
@@ -194,19 +172,15 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 			if (finishedFailedJobs.contains(job)) {
 				finishedFailedJobs.remove(job);
 				finishedFailedJobsAdapter.notifyDataSetChanged();
-
-				//Utils.setListViewHeightBasedOnItems(finishedFailedJobsRecyclerView);
 				if (finishedFailedJobs.size() == 0) {
-					finishedFailedJobsList.setVisibility(View.GONE);
+					getActivity().findViewById(R.id.scratch_converted_programs_list).setVisibility(View.GONE);
 				}
 			}
 
 			if (!runningJobs.contains(job)) {
 				runningJobs.add(0, job);
 				runningJobsAdapter.notifyDataSetChanged();
-
-				//Utils.setListViewHeightBasedOnItems(runningJobsRecyclerView);
-				runningJobsList.setVisibility(View.VISIBLE);
+				getActivity().findViewById(R.id.scratch_conversion_list).setVisibility(View.VISIBLE);
 			} else {
 				runningJobsAdapter.notifyDataSetChanged();
 			}
@@ -216,19 +190,15 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 		if (runningJobs.contains(job)) {
 			runningJobs.remove(job);
 			runningJobsAdapter.notifyDataSetChanged();
-
-			//Utils.setListViewHeightBasedOnItems(runningJobsRecyclerView);
 			if (runningJobs.size() == 0) {
-				runningJobsList.setVisibility(View.GONE);
+				getActivity().findViewById(R.id.scratch_conversion_list).setVisibility(View.GONE);
 			}
 		}
 
 		if (!finishedFailedJobs.contains(job)) {
 			finishedFailedJobs.add(0, job);
 			finishedFailedJobsAdapter.notifyDataSetChanged();
-
-			//Utils.setListViewHeightBasedOnItems(finishedFailedJobsRecyclerView);
-			finishedFailedJobsList.setVisibility(View.VISIBLE);
+			getActivity().findViewById(R.id.scratch_converted_programs_list).setVisibility(View.VISIBLE);
 		} else {
 			finishedFailedJobsAdapter.notifyDataSetChanged();
 		}
@@ -243,18 +213,19 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 			return;
 		}
 
-		convertPanelHeadlineView.setText(job.getTitle());
+		((TextView) getActivity().findViewById(R.id.scratch_convert_headline)).setText(job.getTitle());
 
 		if (showProgress) {
-			convertProgressBar.setProgress(progress);
-			convertStatusProgressTextView.setText(String.format(Locale.getDefault(), "%1$d%%", progress));
+			((ProgressBar) getActivity().findViewById(R.id.scratch_convert_progress_bar)).setProgress(progress);
+			((TextView) getActivity().findViewById(R.id.scratch_convert_status_progress_text)).setText(String.format
+					(Locale.getDefault(), "%1$d%%", progress));
 
-			convertPanelStatusView.setVisibility(View.GONE);
-			convertProgressLayout.setVisibility(View.VISIBLE);
+			getActivity().findViewById(R.id.scratch_convert_status_text).setVisibility(View.GONE);
+			getActivity().findViewById(R.id.scratch_convert_progress_layout).setVisibility(View.VISIBLE);
 		} else {
-			convertPanelStatusView.setText(statusTextID);
-			convertPanelStatusView.setVisibility(View.VISIBLE);
-			convertProgressLayout.setVisibility(View.GONE);
+			((TextView) getActivity().findViewById(R.id.scratch_convert_status_text)).setText(statusTextID);
+			getActivity().findViewById(R.id.scratch_convert_status_text).setVisibility(View.VISIBLE);
+			getActivity().findViewById(R.id.scratch_convert_progress_layout).setVisibility(View.GONE);
 		}
 
 		runningJobsAdapter.notifyDataSetChanged();
@@ -296,12 +267,12 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 
 		int totalRunningJobs = allRunningJobs.size();
 		int totalFinishedJobs = numberFinishedJobs;
-		convertPanelHeadlineView.setText(getResources().getQuantityString(R.plurals.status_in_progress_x_jobs,
+		((TextView) getActivity().findViewById(R.id.scratch_convert_headline)).setText(getResources().getQuantityString(R.plurals.status_in_progress_x_jobs,
 				totalRunningJobs, totalRunningJobs));
-		convertPanelStatusView.setText(getResources().getQuantityString(R.plurals.status_completed_x_jobs,
+		((TextView) getActivity().findViewById(R.id.scratch_convert_status_text)).setText(getResources().getQuantityString(R.plurals.status_completed_x_jobs,
 				totalFinishedJobs, totalFinishedJobs));
-		convertPanelStatusView.setVisibility(View.VISIBLE);
-		convertProgressLayout.setVisibility(View.GONE);
+		getActivity().findViewById(R.id.scratch_convert_status_text).setVisibility(View.VISIBLE);
+		getActivity().findViewById(R.id.scratch_convert_progress_layout).setVisibility(View.GONE);
 		setIconImageView(webImage);
 	}
 
@@ -343,19 +314,17 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 		}
 
 		if (runningJobs.size() > 0) {
-			//Utils.setListViewHeightBasedOnItems(runningJobsRecyclerView);
-			runningJobsList.setVisibility(View.VISIBLE);
+			getActivity().findViewById(R.id.scratch_conversion_list).setVisibility(View.VISIBLE);
 			runningJobsAdapter.notifyDataSetChanged();
 		} else {
-			runningJobsList.setVisibility(View.GONE);
+			getActivity().findViewById(R.id.scratch_conversion_list).setVisibility(View.GONE);
 		}
 
 		if (finishedFailedJobs.size() > 0) {
-		//	Utils.setListViewHeightBasedOnItems(finishedFailedJobsRecyclerView);
-			finishedFailedJobsList.setVisibility(View.VISIBLE);
+			getActivity().findViewById(R.id.scratch_converted_programs_list).setVisibility(View.VISIBLE);
 			finishedFailedJobsAdapter.notifyDataSetChanged();
 		} else {
-			finishedFailedJobsList.setVisibility(View.GONE);
+			getActivity().findViewById(R.id.scratch_converted_programs_list).setVisibility(View.GONE);
 		}
 
 		if (hasVisibleJobs()) {
@@ -482,16 +451,11 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 	}
 
 
-	public void onItemClick(Job item) {
+	public void onItemClick(Job job) {
 
 		if (!Looper.getMainLooper().equals(Looper.myLooper())) {
 			throw new AssertionError("You should not change the UI from any thread except UI thread!");
 		}
-
-		//Log.i(TAG, "User clicked on position: " + position);
-
-		//final Job job = finishedFailedJobsAdapter.getItems().get(position);
-		final Job job = item;
 		if (job == null) {
 			Log.e(TAG, "Job not found in runningJobsAdapter!");
 			return;

@@ -31,20 +31,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -79,7 +74,7 @@ import static android.view.View.VISIBLE;
 public class ScratchProgramDetailsActivity extends BaseActivity implements
 		FetchScratchProgramDetailsTask.ScratchProgramListTaskDelegate,
 		JobViewListener, Client.DownloadCallback,
-		RVAdapter.OnItemClickListener<ScratchProgramData>{
+		RVAdapter.OnItemClickListener<ScratchProgramData> {
 
 	public void onItemClick(ScratchProgramData item) {
 		Log.i(TAG, "Project ID of clicked item is: " + item.getId());
@@ -109,6 +104,7 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 	public static void setConversionManager(final ConversionManager manager) {
 		conversionManager = manager;
 	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -171,9 +167,10 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 	private void setUpActionBar() {
 		setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		String title = getResources().getString(R.string.title_activity_scratch_converter) + " " +  getResources()
+		String title = getResources().getString(R.string.title_activity_scratch_converter) + " " + getResources()
 				.getString(R.string.beta).toUpperCase();
-		getSupportActionBar().setTitle(title);	}
+		getSupportActionBar().setTitle(title);
+	}
 
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
@@ -201,7 +198,7 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 		if (scratchRemixedProgramAdapter != null) {
 			scratchRemixedProgramAdapter.getItems().clear();
 		}
-		((TextView)findViewById(R.id.scratch_project_title)).setText(scratchProgramData.getTitle());
+		((TextView) findViewById(R.id.scratch_project_title)).setText(scratchProgramData.getTitle());
 		if (scratchProgramData.getImage() != null && scratchProgramData.getImage().getUrl() != null) {
 			final int height = getResources().getDimensionPixelSize(R.dimen.scratch_project_image_height);
 			final String originalImageURL = scratchProgramData.getImage().getUrl().toString();
@@ -230,7 +227,6 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 
 		scratchRemixedProgramAdapter.setOnItemClickListener(this);
 	}
-
 
 	private void onJobNotInProgress() {
 		((Button) findViewById(R.id.scratch_project_convert_button)).setText(R.string.convert);
@@ -282,7 +278,7 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 	}
 
 	private void updateViews() {
-		((TextView)findViewById(R.id.scratch_project_title)).setText(programData.getTitle());
+		((TextView) findViewById(R.id.scratch_project_title)).setText(programData.getTitle());
 		((TextView) findViewById(R.id.scratch_project_owner)).setText(getString(R.string.by_x, programData.getOwner()));
 
 		if (programData.getNotesAndCredits() != null && programData.getNotesAndCredits().length() > 0) {
@@ -298,7 +294,7 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 		if (programData.getInstructions() != null) {
 			String instructionsText = programData.getInstructions().replace("\n\n", "\n");
 			instructionsText = (instructionsText.length() > 0) ? instructionsText : "--";
-			( (FlowTextView) findViewById(R.id.scratch_project_instructions_flow_text)).setText(instructionsText);
+			((FlowTextView) findViewById(R.id.scratch_project_instructions_flow_text)).setText(instructionsText);
 
 			float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, getResources().getDisplayMetrics());
 			((FlowTextView) findViewById(R.id.scratch_project_instructions_flow_text)).setTextSize(textSize);

@@ -22,7 +22,6 @@
  */
 package org.catrobat.catroid.ui;
 
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -79,6 +78,7 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 		return (ScratchConverterSlidingUpPanelFragment) getFragmentManager().findFragmentById(R.id
 				.fragment_scratch_converter_sliding_up_panel);
 	}
+
 	private SearchScratchSearchProjectsListFragment getSearchFragment() {
 		return (SearchScratchSearchProjectsListFragment) getFragmentManager()
 				.findFragmentById(
@@ -97,7 +97,7 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 	private void setUpActionBar() {
 		setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		String title = getResources().getString(R.string.title_activity_scratch_converter) + " " +  getResources()
+		String title = getResources().getString(R.string.title_activity_scratch_converter) + " " + getResources()
 				.getString(R.string.beta).toUpperCase();
 		getSupportActionBar().setTitle(title);
 	}
@@ -130,11 +130,13 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 
 		Log.i(TAG, "Scratch Converter Activity created");
 	}
-	@Override protected void onPostCreate(Bundle savedBundle)
-	{
+
+	@Override
+	protected void onPostCreate(Bundle savedBundle) {
 		super.onPostCreate(savedBundle);
-		getSlidingUpFragment().getFinishedFailedJobsAdapter().setScratchJobEditListener(this);
+		getSlidingUpFragment().getFinishedFailedJobsAdapter().setScratchProgramOnClickListener(this);
 	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -154,7 +156,6 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 		conversionManager.removeGlobalJobViewListener(getSlidingUpFragment());
 		client = null;
 	}
-
 
 	public void convertProjects(List<ScratchProgramData> programList) {
 		final int numberOfJobsInProgress = conversionManager.getNumberOfJobsInProgress();
@@ -226,6 +227,7 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 		getMenuInflater().inflate(R.menu.menu_scratch_projects, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		handleShowDetails(getSearchFragment().getShowDetails(),
@@ -285,8 +287,7 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 		}
 	}
 
-	public void onItemClick(Job job)
-	{
+	public void onItemClick(Job job) {
 		if (!Looper.getMainLooper().equals(Looper.myLooper())) {
 			throw new AssertionError("You should not change the UI from any thread except UI thread!");
 		}
@@ -339,5 +340,6 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 		loadProjectTask.execute();
 	}
 
-	public void onItemLongClick(Job item, ViewHolder h){}
+	public void onItemLongClick(Job item, ViewHolder h) {
+	}
 }

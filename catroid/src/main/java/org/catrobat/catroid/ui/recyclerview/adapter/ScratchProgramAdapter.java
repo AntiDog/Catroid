@@ -22,6 +22,7 @@
  */
 
 package org.catrobat.catroid.ui.recyclerview.adapter;
+
 import android.view.View;
 
 import com.squareup.picasso.Picasso;
@@ -30,6 +31,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ScratchProgramData;
 import org.catrobat.catroid.ui.recyclerview.viewholder.ExtendedVH;
 import org.catrobat.catroid.utils.Utils;
+
 import java.util.List;
 
 public class ScratchProgramAdapter extends ExtendedRVAdapter<ScratchProgramData> {
@@ -38,7 +40,6 @@ public class ScratchProgramAdapter extends ExtendedRVAdapter<ScratchProgramData>
 		super(objects);
 		showDetails = true;
 	}
-
 
 	@Override
 	public void onBindViewHolder(final ExtendedVH holder, int position) {
