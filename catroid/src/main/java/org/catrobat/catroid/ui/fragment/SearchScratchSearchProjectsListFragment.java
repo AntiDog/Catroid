@@ -404,7 +404,6 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 		if (savedInstanceState != null) {
 			scratchProgramToEdit = (ScratchProgramData) savedInstanceState.getSerializable(BUNDLE_ARGUMENTS_SCRATCH_PROJECT_DATA);
 		}
-		//initAdapter();
 		searchView.setFocusable(false);
 		fetchDefaultProjects();
 		initializeAdapter();
@@ -447,7 +446,6 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 			Log.d(TAG, "Converting project '" + scratchProgramToEdit.getTitle() + "'");
 		}
 		initializeAdapter();
-		//initAdapter();
 		activity.convertProjects(projectsToConvert);
 	}
 
