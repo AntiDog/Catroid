@@ -50,13 +50,9 @@ public class ScratchProgramAdapter extends ExtendedRVAdapter<ScratchProgramData>
 			final int height = holder.image.getContext().getResources().getDimensionPixelSize(R.dimen
 					.scratch_project_thumbnail_height);
 			final String originalImageURL = item.getImage().getUrl().toString();
-			// load image but only thumnail!
-			// in order to download only thumbnail version of the original image
-			// we have to reduce the image size in the URL
 			final String thumbnailImageURL = Utils.changeSizeOfScratchImageURL(originalImageURL, height);
 			Picasso.with(holder.image.getContext()).load(thumbnailImageURL).into(holder.image);
 		} else {
-			// clear old image of other program if this is a reused view element
 			holder.image.setImageBitmap(null);
 		}
 		holder.name.setSingleLine(true);

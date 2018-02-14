@@ -76,7 +76,6 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 		RVAdapter.OnItemClickListener<ScratchProgramData> {
 	private static final int NONE = 0;
 	private static final int CONVERT = 1;
-	///-----------------------------------------------------------------------------------------------
 	private static final String TAG = SearchScratchSearchProjectsListFragment.class.getSimpleName();
 	private static final String BUNDLE_ARGUMENTS_SCRATCH_PROJECT_DATA = "scratch_project_data";
 	private static final String SHARED_PREFERENCE_NAME = "showDetailsScratchProjects";
@@ -249,7 +248,6 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 		activity.startActivityForResult(intent, Constants.INTENT_REQUEST_CODE_CONVERT);
 	}
 
-	// dependency-injection for testing with mock object
 	public void setDataFetcher(final ScratchDataFetcher fetcher) {
 		dataFetcher = fetcher;
 	}
@@ -356,14 +354,12 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-				Log.i(TAG, "Submitting query: " + query);
 				searchView.clearFocus();
 				return false;
 			}
 
 			@Override
 			public boolean onQueryTextChange(String newText) {
-				Log.i(TAG, newText);
 				if (newText.length() <= 2) {
 					searchResultsRecyclerView.setVisibility(View.INVISIBLE);
 					return false;
@@ -382,13 +378,10 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 	public void search(final String text) {
 		ScratchSearchResult cachedResult = scratchSearchResultCache.get(text);
 		if (cachedResult != null) {
-			Log.d(TAG, "Cache hit!");
 			onPostExecute(cachedResult);
 			return;
 		}
 
-		// cache miss
-		Log.d(TAG, "Cache miss! -> Searching...");
 		if (currentSearchTask != null) {
 			currentSearchTask.cancel(true);
 		}
@@ -449,9 +442,6 @@ public class SearchScratchSearchProjectsListFragment extends Fragment
 		activity.convertProjects(projectsToConvert);
 	}
 
-	//----------------------------------------------------------------------------------------------
-	// Scratch Search Task Delegate Methods
-	//----------------------------------------------------------------------------------------------
 	@Override
 	public void onPreExecute() {
 		Log.d(TAG, "onPreExecute for SearchScratchProgramsTask called");

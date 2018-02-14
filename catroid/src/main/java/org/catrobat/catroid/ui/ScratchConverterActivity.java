@@ -40,7 +40,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.ScratchProgramData;;
+import org.catrobat.catroid.common.ScratchProgramData;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.scratchconverter.Client;
 import org.catrobat.catroid.scratchconverter.ConversionManager;
@@ -68,7 +68,6 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 
 	private static final String TAG = ScratchConverterActivity.class.getSimpleName();
 
-	// to avoid using singleton in fragment
 	private static Client client = null;
 	private static ScratchDataFetcher dataFetcher = ServerCalls.getInstance();
 	private SlidingUpPanelLayout slidingLayout;
@@ -127,8 +126,6 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 		slidingLayout = findViewById(R.id.sliding_layout);
 		slidingLayout.addPanelSlideListener(this);
 		hideSlideUpPanelBar();
-
-		Log.i(TAG, "Scratch Converter Activity created");
 	}
 
 	@Override
@@ -149,7 +146,6 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		Log.d(TAG, "Destroyed: " + TAG);
 		conversionManager.shutdown();
 		conversionManager.removeGlobalDownloadCallback(getSlidingUpFragment());
 		conversionManager.removeBaseInfoViewListener(getSlidingUpFragment());
@@ -183,7 +179,6 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 				continue;
 			}
 
-			Log.i(TAG, "Converting program: " + programData.getTitle());
 			conversionManager.convertProgram(programData.getId(), programData.getTitle(), programData.getImage(), false);
 			counter++;
 		}
@@ -274,7 +269,6 @@ public class ScratchConverterActivity extends BaseActivity implements SlidingUpP
 	@Override
 	public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState,
 			SlidingUpPanelLayout.PanelState newState) {
-		Log.d(TAG, "SlidingUpPanel state changed: " + newState.toString());
 		switch (newState) {
 			case EXPANDED:
 				getSlidingUpFragment().rotateImageButton(180);

@@ -57,8 +57,8 @@ import org.catrobat.catroid.scratchconverter.protocol.Job;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScratchConverterActivity;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
-import org.catrobat.catroid.ui.recyclerview.asynctask.ProjectLoaderTask;
 import org.catrobat.catroid.ui.recyclerview.adapter.ScratchJobAdapter;
+import org.catrobat.catroid.ui.recyclerview.asynctask.ProjectLoaderTask;
 import org.catrobat.catroid.ui.scratchconverter.BaseInfoViewListener;
 import org.catrobat.catroid.ui.scratchconverter.JobViewListener;
 import org.catrobat.catroid.utils.ToastUtil;
@@ -72,12 +72,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
-
 public class ScratchConverterSlidingUpPanelFragment extends Fragment
 		implements BaseInfoViewListener, JobViewListener, Client.DownloadCallback,
 		ProjectLoaderTask.ProjectLoaderListener {
-
 	private static final String TAG = ScratchConverterSlidingUpPanelFragment.class.getSimpleName();
 
 	private Map<Long, Job> downloadJobsMap = Collections.synchronizedMap(new LinkedHashMap<Long, Job>());
@@ -402,7 +399,6 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 
 	@Override
 	public void onDownloadFinished(final String catrobatProgramName, final String url) {
-		Log.i(TAG, "Download of program '" + catrobatProgramName + "' finished (URL was " + url + ")");
 		final long jobID = Utils.extractScratchJobIDFromURL(url);
 		if (jobID == Constants.INVALID_SCRATCH_PROGRAM_ID) {
 			Log.w(TAG, "Received download-finished call for program: '" + catrobatProgramName + "' with invalid url: " + url);
@@ -430,7 +426,6 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 
 	@Override
 	public void onUserCanceledDownload(final String url) {
-		Log.i(TAG, "User canceled download with URL: " + url);
 		final long jobID = Utils.extractScratchJobIDFromURL(url);
 		if (jobID == Constants.INVALID_SCRATCH_PROGRAM_ID) {
 			Log.w(TAG, "Received download-canceled call for program with invalid url: " + url);
@@ -447,9 +442,7 @@ public class ScratchConverterSlidingUpPanelFragment extends Fragment
 		updateConvertPanel(job, R.string.status_download_canceled, false, 0);
 	}
 
-
 	public void onItemClick(Job job) {
-
 		if (!Looper.getMainLooper().equals(Looper.myLooper())) {
 			throw new AssertionError("You should not change the UI from any thread except UI thread!");
 		}

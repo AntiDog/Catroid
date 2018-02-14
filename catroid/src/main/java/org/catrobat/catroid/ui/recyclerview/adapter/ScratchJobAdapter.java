@@ -24,7 +24,6 @@
 package org.catrobat.catroid.ui.recyclerview.adapter;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,6 @@ public class ScratchJobAdapter extends RVAdapter<Job> {
 
 	public ScratchJobAdapter(List<Job> objects) {
 		super(objects);
-		Log.d(TAG, "Number of remixes: " + objects.size());
 	}
 
 	public void setScratchProgramOnClickListener(OnItemClickListener<Job> listener) {
@@ -74,20 +72,14 @@ public class ScratchJobAdapter extends RVAdapter<Job> {
 			final int height = holder.image.getContext().getResources().getDimensionPixelSize(R.dimen
 					.scratch_project_thumbnail_height);
 			final String originalImageURL = item.getImage().getUrl().toString();
-			// load image but only thumnail!
-			// in order to download only thumbnail version of the original image
-			// we have to reduce the image size in the URL
 			final String thumbnailImageURL = Utils.changeSizeOfScratchImageURL(originalImageURL, height);
 			Picasso.with(holder.image.getContext()).load(thumbnailImageURL).into(holder.image);
 		} else {
-			// clear old image of other program if this is a reused view element
 			holder.image.setImageBitmap(null);
 		}
 
-		// set name of project:
 		holder.title.setSingleLine(true);
 
-		// set status of project:
 		holder.status.setTextColor(Color.WHITE);
 		holder.details.setVisibility(View.VISIBLE);
 
@@ -133,7 +125,6 @@ public class ScratchJobAdapter extends RVAdapter<Job> {
 		}
 
 		if (showProgressBar) {
-			// update progress state of project:
 			holder.progress.setText(String.format(Locale.getDefault(), "%1$d%%", progress));
 			holder.progressBar.setProgress(progress);
 			holder.progressLayout.setVisibility(View.VISIBLE);
@@ -141,19 +132,14 @@ public class ScratchJobAdapter extends RVAdapter<Job> {
 			holder.progressLayout.setVisibility(View.GONE);
 		}
 
-		// set project image (threaded):
 		WebImage httpImageMetadata = item.getImage();
 		if (httpImageMetadata != null && httpImageMetadata.getUrl() != null) {
 			final int height = holder.status.getContext().getResources().getDimensionPixelSize(R.dimen.scratch_project_thumbnail_height);
 			final String originalImageURL = httpImageMetadata.getUrl().toString();
 
-			// load image but only thumnail!
-			// in order to download only thumbnail version of the original image
-			// we have to reduce the image size in the URL
 			final String thumbnailImageURL = Utils.changeSizeOfScratchImageURL(originalImageURL, height);
 			Picasso.with(holder.status.getContext()).load(thumbnailImageURL).into(holder.image);
 		} else {
-			// clear old image of other project if this is a reused view element
 			holder.image.setImageBitmap(null);
 		}
 

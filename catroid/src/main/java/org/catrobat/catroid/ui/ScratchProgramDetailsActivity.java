@@ -77,8 +77,6 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 		RVAdapter.OnItemClickListener<ScratchProgramData> {
 
 	public void onItemClick(ScratchProgramData item) {
-		Log.i(TAG, "Project ID of clicked item is: " + item.getId());
-
 		Intent intent = new Intent(this, ScratchProgramDetailsActivity.class);
 		intent.putExtra(Constants.INTENT_SCRATCH_PROGRAM_DATA, (Parcelable) item);
 		startActivityForResult(intent, Constants.INTENT_REQUEST_CODE_CONVERT);
@@ -157,7 +155,6 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		Log.d(TAG, "Destroyed " + TAG);
 		conversionManager.removeJobViewListener(programData.getId(), this);
 		conversionManager.removeGlobalDownloadCallback(this);
 		fetchRemixesTask.cancel(true);
@@ -202,10 +199,6 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 		if (scratchProgramData.getImage() != null && scratchProgramData.getImage().getUrl() != null) {
 			final int height = getResources().getDimensionPixelSize(R.dimen.scratch_project_image_height);
 			final String originalImageURL = scratchProgramData.getImage().getUrl().toString();
-
-			// load image but only thumnail!
-			// in order to download only thumbnail version of the original image
-			// we have to reduce the image size in the URL
 			final String thumbnailImageURL = Utils.changeSizeOfScratchImageURL(originalImageURL, height);
 			ImageView image = findViewById(R.id.scratch_project_image_view);
 			Picasso.with(this).load(thumbnailImageURL).into(image);
@@ -243,12 +236,8 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 		((Button) findViewById(R.id.scratch_project_convert_button)).setText(R.string.status_downloading);
 	}
 
-	//----------------------------------------------------------------------------------------------
-	// Scratch Project Details Task Delegate Methods
-	//----------------------------------------------------------------------------------------------
 	@Override
 	public void onPreExecute() {
-		Log.d(TAG, "onPreExecute for FetchScratchProgramRemixesTask called");
 		final ScratchProgramDetailsActivity activity = this;
 		progressDialog = new ProgressDialog(activity);
 		progressDialog.setCancelable(false);
@@ -259,7 +248,6 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 
 	@Override
 	public void onPostExecute(final ScratchProgramData programData) {
-		Log.d(TAG, "onPostExecute for FetchScratchProgramRemixesTask called");
 		Preconditions.checkNotNull(progressDialog, "No progress dialog set/initialized!");
 		progressDialog.dismiss();
 		if (programData == null) {
@@ -352,9 +340,6 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 		findViewById(R.id.separation_line_bottom).setVisibility(VISIBLE);
 	}
 
-	//----------------------------------------------------------------------------------------------
-	// JobViewListener Events
-	//----------------------------------------------------------------------------------------------
 	@Override
 	public void onJobScheduled(final Job job) {
 		if (job.getJobID() == programData.getId()) {
@@ -364,27 +349,22 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 
 	@Override
 	public void onJobReady(final Job job) {
-		// nothing to do
 	}
 
 	@Override
 	public void onJobStarted(final Job job) {
-		// nothing to do
 	}
 
 	@Override
 	public void onJobProgress(final Job job, final short progress) {
-		// nothing to do
 	}
 
 	@Override
 	public void onJobOutput(final Job job, @NonNull final String[] lines) {
-		// nothing to do
 	}
 
 	@Override
 	public void onJobFinished(final Job job) {
-		// nothing to do
 	}
 
 	@Override
@@ -411,7 +391,6 @@ public class ScratchProgramDetailsActivity extends BaseActivity implements
 
 	@Override
 	public void onDownloadProgress(short progress, String url) {
-		// nothing to do
 	}
 
 	@Override

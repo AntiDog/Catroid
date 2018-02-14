@@ -34,7 +34,6 @@ import org.catrobat.catroid.R;
 public class ScratchJobVH extends ViewHolder {
 
 	public RelativeLayout background;
-	//public TextView name;
 	public ProgressBar progressBar;
 	public ImageView image;
 	public RelativeLayout details;
